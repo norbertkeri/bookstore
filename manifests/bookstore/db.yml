@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  namespace: production
+  labels:
+    app: db
+spec:
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - name: db
+        image: postgres:17
+        env:
+        - name: POSTGRES_PASSWORD
+          value: bookstore
+        - name: POSTGRES_USER
+          value: bookstore
+        - name: POSTGRES_DB
+          value: bookstore
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: production
+spec:
+  selector:
+    app: db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432

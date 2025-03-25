@@ -1,0 +1,7 @@
+concourse:
+  web:
+    externalUrl: http://127.0.0.1:8080
+    securityContext:
+      privileged: true
+  # worker:
+  #   runtime: guardian

@@ -1,0 +1,24 @@
+inputs:
+  - name: bookstore
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: rust
+    tag: 1.85-slim
+run:
+  dir: ./bookstore/bookstore
+  path: /bin/bash
+  args:
+    - -c
+    - |
+      apt-get update
+      apt-get install -y postgresql
+      cat > /etc/postgresql/*/main/pg_hba.conf <<-EOF
+      host   all   postgres   localhost   trust
+      EOF
+      service postgresql restart
+      psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE bookstore";
+      /usr/local/cargo/bin/cargo test
+params:
+  TEST_DATABASE_URL: postgres://postgres@127.0.0.1

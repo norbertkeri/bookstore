@@ -1,0 +1,13 @@
+platform: linux
+inputs:
+  - name: bookstore
+image_resource:
+  type: registry-image
+  source:
+    repository: concourse/oci-build-task
+outputs:
+  - name: image
+params:
+  CONTEXT: bookstore/bookstore
+run:
+  path: build

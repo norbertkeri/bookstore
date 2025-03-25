@@ -1,0 +1,75 @@
+resources:
+  - name: bookstore
+    type: git
+    icon: git
+    source: 
+      uri: https://github.com/norbertkeri/bookstore.git
+
+  - name: bookstore-image
+    type: registry-image
+    icon: docker
+    source:
+      repository: visko/cutters
+      tag: latest
+      username: visko
+      password: ((bookstore.docker_hub))
+
+
+jobs:
+- name: lint
+  plan:
+  - get: bookstore
+    trigger: true
+  - task: lint
+    config:
+      inputs:
+        - name: bookstore
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: cimg/rust
+          tag: 1.85
+      run:
+        dir: ./bookstore/bookstore
+        path: /home/circleci/.cargo/bin/cargo
+        args: ["fmt", "--check"]
+
+- name: test
+  plan:
+  - get: bookstore
+    trigger: true
+  - task: test
+    file: bookstore/manifests/pipelines/tasks/test.yml
+
+- name: build
+  plan:
+  - get: bookstore
+    trigger: true
+  - task: build
+    config:
+      inputs:
+        - name: bookstore
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: rust
+          tag: 1.85-slim
+      run:
+        dir: ./bookstore/bookstore
+        path: /usr/local/cargo/bin/cargo
+        args: ["build", "--release"]
+      outputs:
+          - name: bookstore-binary
+            path: ./bookstore/bookstore/target
+
+- name: build-and-push
+  plan:
+  - get: bookstore
+  - task: build-image
+    privileged: true
+    file: bookstore/manifests/pipelines/tasks/build_image.yml
+  - put: bookstore-image
+    params:
+      image: image/image.tar
