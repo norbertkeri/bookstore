@@ -16,6 +16,12 @@ Instructions:
     kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 * Wait for the argocd pods to settle
+* Portforward to the arocd pod, get the admin password and login
+
+    kubectl port-forward svc/argocd-server -n argocd 8080:443
+    argocd admin initial-password -n argocd # username is admin
+    argocd login localhost:8080
+
 * Create an argocd application that will deploy the manifests from this git repository
 
     argocd app create manifests --path manifests --directory-recurse --dest-server https://kubernetes.default.svc --repo https://github.com/norbertkeri/bookstore.git --sync-policy auto

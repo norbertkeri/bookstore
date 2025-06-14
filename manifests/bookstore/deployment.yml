@@ -2,12 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: bookstore
-  namespace: production
   labels:
     app: bookstore
-  annotations:
-    argocd-image-updater.argoproj.io/image-list: bookstore=visko/cutters
-    argocd-image-updater.argoproj.io/bookstore.update-strategy: latest
 spec:
   selector:
     matchLabels:
@@ -25,4 +21,4 @@ spec:
         - containerPort: 80
         env:
         - name: DATABASE_URL
-          value: postgres://bookstore:bookstore@db.production:5432/bookstore
+          value: postgres://bookstore:bookstore@db:5432/bookstore

@@ -24,7 +24,7 @@ async fn main() -> color_eyre::Result<()> {
     let app = create_router(AppState::new(pool));
 
     let bindto = std::env::var("BIND_TO").unwrap_or("127.0.0.1:3000".to_string());
-    info!("Starting web server on {bindto}");
+    println!("Starting web server on {bindto}");
     let addr = tokio::net::TcpListener::bind(bindto).await?;
 
     axum::serve(addr, app).await?;
