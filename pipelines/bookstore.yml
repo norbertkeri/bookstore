@@ -40,36 +40,14 @@ jobs:
   - get: bookstore
     trigger: true
   - task: test
-    file: bookstore/manifests/pipelines/tasks/test.yml
-
-- name: build
-  plan:
-  - get: bookstore
-    trigger: true
-  - task: build
-    config:
-      inputs:
-        - name: bookstore
-      platform: linux
-      image_resource:
-        type: registry-image
-        source:
-          repository: rust
-          tag: 1.85-slim
-      run:
-        dir: ./bookstore/bookstore
-        path: /usr/local/cargo/bin/cargo
-        args: ["build", "--release"]
-      outputs:
-          - name: bookstore-binary
-            path: ./bookstore/bookstore/target
+    file: bookstore/pipelines/tasks/test.yml
 
 - name: build-and-push
   plan:
   - get: bookstore
   - task: build-image
     privileged: true
-    file: bookstore/manifests/pipelines/tasks/build_image.yml
+    file: bookstore/pipelines/tasks/build_image.yml
   - put: bookstore-image
     params:
       image: image/image.tar

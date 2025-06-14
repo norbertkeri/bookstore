@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bookstore
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: bookstore=visko/cutters:latest
+    argocd-image-updater.argoproj.io/bookstore.update-strategy: digest
+spec:
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated: {}
+  project: default
+  source:
+    path: manifests/bookstore
+    repoURL: https://github.com/norbertkeri/bookstore.git
