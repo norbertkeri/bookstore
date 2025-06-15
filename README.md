@@ -24,7 +24,7 @@ Instructions:
 
 * Create an argocd application that will deploy the manifests from this git repository
 
-    argocd app create manifests --path manifests --directory-recurse --dest-server https://kubernetes.default.svc --repo https://github.com/norbertkeri/bookstore.git --sync-policy auto
+    argocd app create manifests --path manifests --dest-server https://kubernetes.default.svc --repo https://github.com/norbertkeri/bookstore.git --sync-policy auto
 
 * Wait for pods to settle
 
