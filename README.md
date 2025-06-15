@@ -33,13 +33,22 @@ Instructions:
 To observe things, you can access the argocd UI by grabbing the default password, and port-forwarding to the argocd pod:
 
     argocd admin initial-password -n argocd # username is admin
-    kubectl port-forward svc/argocd-server -n argocd 8080:443
+    kubectl port-forward svc/argocd-server -n argocd 8081:443
 
 ## Concourse CI/CD
 
-You can deploy the pipelines with:
+* Port forward to the concourse pod with:
 
-    fly -t cutters set-pipeline -c manifests/pipelines/bookstore.yml  -p bookstore
+    kubectl port-forward -n concourse svc/concourse-web 8080:8080
+
+* Login
+
+    fly login -t cutters -c http://127.0.0.1:8080 # default is test/test
+
+* Deploy the pipelines
+
+    fly -t cutters set-pipeline -c manifests/pipelines/bookstore.yml -p bookstore
 
 Concourse is a bit more convoluted than what I could explain in this readme, but if that is something you are interested in, you can read more on their homepage: https://concourse-ci.org/
+
 I will be more than happy to provide a demonstration on it as well.
